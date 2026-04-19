@@ -15,9 +15,9 @@ export default function LandingPage({ onLogoClick }) {
       <Hero />
       <Features />
       <Courses />
-      <DroneSection />
-      <AIEducation />
       <CBSEUpdate />
+      <AIEducation />
+      <DroneSection />
       <Contact />
       <Footer />
     </>

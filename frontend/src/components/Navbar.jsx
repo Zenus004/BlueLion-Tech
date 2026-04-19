@@ -27,17 +27,22 @@ export default function Navbar({ onLogoClick }) {
           </motion.div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8 items-center">
-            {['Home', 'About Us', 'Courses', 'Page', 'Contact Us'].map((item, index) => (
-              <motion.a
-                key={index}
-                whileHover={{ scale: 1.05 }}
-                href={`#${item.toLowerCase().replace(' ', '')}`}
-                className="text-gray-700 hover:text-blue-600 transition font-medium relative group"
-              >
-                {item}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-cyan-600 group-hover:w-full transition-all duration-300"></span>
-              </motion.a>
+      <div className="hidden md:flex space-x-8 items-center">
+  {[
+    { name: 'Home', href: '#home' },
+    { name: 'About Us', href: '#aboutus' },
+    { name: 'Courses', href: '#courses' },
+    { name: 'Contact Us', href: '#contact' },
+  ].map((item, index) => (
+    <motion.a
+      key={index}
+      whileHover={{ scale: 1.05 }}
+      href={item.href}
+      className="text-gray-700 hover:text-blue-600 transition font-medium relative group"
+    >
+      {item.name}
+      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-cyan-600 group-hover:w-full transition-all duration-300"></span>
+    </motion.a>
             ))}
             <motion.button 
               whileHover={{ scale: 1.05 }}

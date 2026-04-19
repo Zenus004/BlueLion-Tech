@@ -41,7 +41,7 @@ const courses = [
 
 export default function Courses() {
   return (
-    <section className="py-24 relative overflow-hidden bg-gradient-to-br from-sky-100 via-blue-100 to-violet-500">
+    <section id="courses" className="py-24 relative overflow-hidden bg-gradient-to-br from-sky-100 via-blue-100 to-violet-500">
       {/* Decorative Background Elements */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>

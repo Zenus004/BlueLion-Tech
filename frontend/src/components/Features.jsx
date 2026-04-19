@@ -48,8 +48,7 @@ export default function Features() {
             Special?
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, 
-            luctus nec ullamcorper mattis.
+            We combine expert mentorship, flexible learning, industry-relevant programs, and a supportive community to help you achieve real results.
           </p>
         </motion.div>
 

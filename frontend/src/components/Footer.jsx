@@ -32,7 +32,7 @@ export default function Footer() {
             <div className="flex items-center gap-3">
               {/* Instagram */}
               <motion.a
-                href="https://instagram.com/"
+                href="https://www.instagram.com/blueliontech_official?igsh=MzB4bnNkczB5ZGlp"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.12 }}
@@ -45,7 +45,7 @@ export default function Footer() {
 
               {/* Facebook */}
               <motion.a
-                href="https://facebook.com/"
+                href="https://www.facebook.com/share/1JBokU6iKT/"
                 target="_blank"
                 rel="noopener noreferrer"
                 whileHover={{ scale: 1.12 }}

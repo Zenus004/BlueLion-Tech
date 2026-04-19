@@ -23,8 +23,7 @@ export default function Hero() {
             transition={{ delay: 0.3 }}
             className="text-lg md:text-xl text-gray-600 mb-8"
           >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, 
-            luctus nec ullamcorper mattis, pulvinar dapibus leo.
+           Unlock industry-ready skills with expert-led courses, flexible learning paths, and real-world knowledge designed to help you grow faster.
           </motion.p>
           
           <motion.div 

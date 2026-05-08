@@ -4,6 +4,7 @@ const authRoutes = require("./authRoutes");
 const applicationRoutes = require("./applicationRoutes");
 const enrollmentRoutes = require("./enrollmentRoutes");
 const contactRoutes = require("./contactRoutes");
+const userDashboardRoutes = require("./userDashboardRoutes");
 
 const router = express.Router();
 
@@ -23,5 +24,6 @@ router.use("/auth", authRoutes);
 router.use("/", applicationRoutes);
 router.use("/", enrollmentRoutes);
 router.use("/", contactRoutes);
+router.use("/", userDashboardRoutes);
 
 module.exports = router;

@@ -5,6 +5,7 @@ const asyncHandler = require("../utils/asyncHandler");
 const User = require("../models/User");
 const Admin = require("../models/Admin");
 const Application = require("../models/Application");
+const Enrollment = require("../models/Enrollment");
 const { generateUserToken, generateAdminToken } = require("../utils/jwt");
 
 const sanitizeUser = (user) => ({
@@ -51,6 +52,10 @@ const userRegister = asyncHandler(async (req, res) => {
   });
 
   await Application.updateMany(
+    { email: normalizedEmail, userId: null },
+    { userId: user._id }
+  );
+  await Enrollment.updateMany(
     { email: normalizedEmail, userId: null },
     { userId: user._id }
   );

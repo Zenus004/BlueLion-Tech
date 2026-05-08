@@ -2,10 +2,15 @@ const mongoose = require("mongoose");
 const app = require("./app");
 const env = require("./config/env");
 const connectDatabase = require("./config/db");
+const bootstrapSuperAdmin = require("./services/SuperAdmin");
 
 const startServer = async () => {
   try {
     await connectDatabase();
+    const bootstrapResult = await bootstrapSuperAdmin();
+    if (bootstrapResult.created) {
+      console.log("Default super admin created: username=superadmin");
+    }
 
     const server = app.listen(env.port, () => {
       console.log(

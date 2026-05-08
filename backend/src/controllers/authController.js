@@ -4,6 +4,7 @@ const ApiError = require("../utils/ApiError");
 const asyncHandler = require("../utils/asyncHandler");
 const User = require("../models/User");
 const Admin = require("../models/Admin");
+const Application = require("../models/Application");
 const { generateUserToken, generateAdminToken } = require("../utils/jwt");
 
 const sanitizeUser = (user) => ({
@@ -48,6 +49,11 @@ const userRegister = asyncHandler(async (req, res) => {
     email: normalizedEmail,
     password: hashedPassword,
   });
+
+  await Application.updateMany(
+    { email: normalizedEmail, userId: null },
+    { userId: user._id }
+  );
 
   const token = generateUserToken({ id: user._id, role: user.role });
 

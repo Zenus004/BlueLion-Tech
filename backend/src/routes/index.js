@@ -1,6 +1,7 @@
 const express = require("express");
 const HTTP_STATUS = require("../constants/httpStatusCodes");
 const authRoutes = require("./authRoutes");
+const applicationRoutes = require("./applicationRoutes");
 
 const router = express.Router();
 
@@ -17,5 +18,6 @@ router.get("/health", (req, res) => {
 });
 
 router.use("/auth", authRoutes);
+router.use("/", applicationRoutes);
 
 module.exports = router;

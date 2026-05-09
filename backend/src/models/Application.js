@@ -1,0 +1,61 @@
+const mongoose = require("mongoose");
+
+const applicationSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+      index: true,
+    },
+    fullName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      index: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    course: {
+      type: String,
+      enum: ["B.Tech", "BCA", "BSc IT", "BBA"],
+      required: true,
+    },
+    qualification: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    city: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "reviewed", "approved", "rejected", "contacted"],
+      default: "pending",
+      index: true,
+    },
+  },
+  {
+    timestamps: true,
+    collection: "applications",
+  }
+);
+
+// Compound indexes for common admin filter queries
+applicationSchema.index({ status: 1, createdAt: -1 });
+applicationSchema.index({ course: 1, status: 1 });
+applicationSchema.index({ createdAt: -1 });
+
+module.exports = mongoose.model("Application", applicationSchema);

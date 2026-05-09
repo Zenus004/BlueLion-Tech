@@ -8,10 +8,10 @@ import CBSEUpdate from './CBSEUpdate';
 import Contact from './Contact';
 import Footer from './Footer';
 
-export default function LandingPage({ onLogoClick }) {
+export default function LandingPage() {
   return (
     <>
-      <Navbar onLogoClick={onLogoClick} />
+      <Navbar />
       <Hero />
       <Features />
       <Courses />

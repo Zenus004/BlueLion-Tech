@@ -1,18 +1,21 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "BlueLion-Tech backend foundation (Phase 1)",
+  "description": "BlueLion-Tech MERN backend — production ready",
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "test": "echo \"No tests configured yet\""
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "keywords": [
     "bluelion-tech",
     "express",
     "mongodb",
-    "phase-1"
+    "mern"
   ],
   "author": "",
   "license": "ISC",
@@ -23,6 +26,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.1",
     "express": "^5.2.1",
+    "express-rate-limit": "^7.5.0",
     "express-validator": "^7.3.2",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
@@ -30,14 +34,6 @@
     "morgan": "^1.10.1"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/mongoose": "^5.11.96",
-    "@types/node": "^25.5.2",
-    "nodemon": "^3.1.14",
-    "ts-node": "^10.9.2",
-    "typescript": "^6.0.2"
+    "nodemon": "^3.1.14"
   }
 }

@@ -62,5 +62,8 @@ const enrollmentSchema = new mongoose.Schema(
     collection: "enrollments",
   }
 );
+enrollmentSchema.index({ status: 1, createdAt: -1 });
+enrollmentSchema.index({ selectedProgram: 1, status: 1 });
+enrollmentSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model("Enrollment", enrollmentSchema);

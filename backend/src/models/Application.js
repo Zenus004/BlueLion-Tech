@@ -53,4 +53,9 @@ const applicationSchema = new mongoose.Schema(
   }
 );
 
+// Compound indexes for common admin filter queries
+applicationSchema.index({ status: 1, createdAt: -1 });
+applicationSchema.index({ course: 1, status: 1 });
+applicationSchema.index({ createdAt: -1 });
+
 module.exports = mongoose.model("Application", applicationSchema);

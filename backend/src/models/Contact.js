@@ -25,5 +25,6 @@ const contactSchema = new mongoose.Schema(
     collection: "contacts",
   }
 );
+contactSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model("Contact", contactSchema);

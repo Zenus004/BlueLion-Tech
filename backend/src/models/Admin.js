@@ -31,4 +31,8 @@ const adminSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+adminSchema.index({ role: 1 });
+adminSchema.index({ isBlocked: 1 });
+adminSchema.index({ createdAt: -1 });
+
 module.exports = mongoose.model("Admin", adminSchema);

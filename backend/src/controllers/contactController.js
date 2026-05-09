@@ -26,6 +26,8 @@ const getAllContacts = asyncHandler(async (req, res) => {
     limit = 10,
     sortBy = "createdAt",
     sortOrder = "desc",
+    createdFrom,
+    createdTo,
   } = req.query;
 
   const pageNumber = Number(page);
@@ -36,6 +38,11 @@ const getAllContacts = asyncHandler(async (req, res) => {
   if (search) {
     const regex = new RegExp(search.trim(), "i");
     filter.$or = [{ name: regex }, { email: regex }, { message: regex }];
+  }
+  if (createdFrom || createdTo) {
+    filter.createdAt = {};
+    if (createdFrom) filter.createdAt.$gte = new Date(`${createdFrom}T00:00:00.000Z`);
+    if (createdTo)   filter.createdAt.$lte = new Date(`${createdTo}T23:59:59.999Z`);
   }
 
   const sort = { [sortBy]: sortOrder === "asc" ? 1 : -1 };

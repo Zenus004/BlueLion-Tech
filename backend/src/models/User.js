@@ -32,4 +32,8 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+userSchema.index({ isBlocked: 1 });
+userSchema.index({ createdAt: -1 });
+userSchema.index({ fullName: "text", email: "text" });
+
 module.exports = mongoose.model("User", userSchema);

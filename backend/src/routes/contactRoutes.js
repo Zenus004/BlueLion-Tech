@@ -13,9 +13,11 @@ const {
   contactIdValidation,
 } = require("../validations/contactValidation");
 
+const { submissionLimiter } = require("../middleware/rateLimiter");
+
 const router = express.Router();
 
-router.post("/contacts", createContactValidation, validateRequest, createContact);
+router.post("/contacts", submissionLimiter, createContactValidation, validateRequest, createContact);
 
 router.get(
   "/admin/contacts",

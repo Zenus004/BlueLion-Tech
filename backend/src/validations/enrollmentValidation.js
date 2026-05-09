@@ -70,6 +70,14 @@ const adminEnrollmentsListValidation = [
     .optional()
     .isIn(["asc", "desc"])
     .withMessage("sortOrder must be asc or desc"),
+  query("createdFrom")
+    .optional()
+    .isISO8601()
+    .withMessage("createdFrom must be a valid date"),
+  query("createdTo")
+    .optional()
+    .isISO8601()
+    .withMessage("createdTo must be a valid date"),
 ];
 
 const enrollmentIdValidation = [

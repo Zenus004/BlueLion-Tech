@@ -15,9 +15,11 @@ const {
   updateEnrollmentStatusValidation,
 } = require("../validations/enrollmentValidation");
 
+const { submissionLimiter } = require("../middleware/rateLimiter");
+
 const router = express.Router();
 
-router.post("/enrollments", createEnrollmentValidation, validateRequest, createEnrollment);
+router.post("/enrollments", submissionLimiter, createEnrollmentValidation, validateRequest, createEnrollment);
 
 router.get(
   "/admin/enrollments",

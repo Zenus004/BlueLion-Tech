@@ -15,10 +15,13 @@ const {
   updateApplicationStatusValidation,
 } = require("../validations/applicationValidation");
 
+const { submissionLimiter } = require("../middleware/rateLimiter");
+
 const router = express.Router();
 
 router.post(
   "/applications",
+  submissionLimiter,
   createApplicationValidation,
   validateRequest,
   createApplication

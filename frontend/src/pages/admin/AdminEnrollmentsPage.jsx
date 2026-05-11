@@ -15,72 +15,32 @@ const links = [
   { to: "/admin/dashboard/admins", label: "Admins" },
 ];
 
+const selectCls = "rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 shadow-sm focus:border-indigo-400 focus:outline-none transition";
+
 export default function AdminEnrollmentsPage() {
   const [state, setState] = useState({ loading: true, error: "", items: [], pagination: null });
-  const [filters, setFilters] = useState({
-    page: 1,
-    limit: 10,
-    search: "",
-    status: "",
-    selectedProgram: "",
-    sortOrder: "desc",
-    createdFrom: "",
-    createdTo: "",
-  });
+  const [filters, setFilters] = useState({ page: 1, limit: 10, search: "", status: "", selectedProgram: "", sortOrder: "desc", createdFrom: "", createdTo: "" });
 
   const load = useCallback(() => {
     setState((p) => ({ ...p, loading: true }));
-    const activeFilters = Object.fromEntries(
-      Object.entries(filters).filter(([_, v]) => v !== "")
-    );
     enrollmentService
-      .list(activeFilters)
-      .then((res) =>
-        setState({
-          loading: false,
-          error: "",
-          items: res.data.data.enrollments,
-          pagination: res.data.data.pagination,
-        })
-      )
-      .catch((e) =>
-        setState({
-          loading: false,
-          error: e?.response?.data?.message || "Failed to load",
-          items: [],
-          pagination: null,
-        })
-      );
+      .list(Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== "")))
+      .then((res) => setState({ loading: false, error: "", items: res.data.data.enrollments, pagination: res.data.data.pagination }))
+      .catch((e) => setState({ loading: false, error: e?.response?.data?.message || "Failed to load", items: [], pagination: null }));
   }, [filters]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      load();
-    }, 300);
-    return () => clearTimeout(timer);
+    const t = setTimeout(load, 300);
+    return () => clearTimeout(t);
   }, [load]);
-
-  const customFilters = [
-    {
-      name: "selectedProgram",
-      placeholder: "All Programs",
-      options: [
-        { value: "Tech Explorers", label: "Tech Explorers" },
-        { value: "Future Innovators", label: "Future Innovators" },
-        { value: "Junior Developers", label: "Junior Developers" },
-      ], // Assuming these are the programs
-    },
-  ];
-
-  const statusOptions = ["pending", "reviewed", "approved", "rejected"];
 
   return (
     <DashboardLayout title="Manage Enrollments" links={links}>
-      <FilterBar 
-        filters={filters} 
-        setFilters={setFilters} 
-        customFilters={customFilters} 
-        statusOptions={statusOptions} 
+      <FilterBar
+        filters={filters}
+        setFilters={setFilters}
+        statusOptions={["pending", "reviewed", "approved", "rejected"]}
+        customFilters={[{ name: "selectedProgram", placeholder: "All Programs", options: [{ value: "Tech Explorers", label: "Tech Explorers" }, { value: "Future Innovators", label: "Future Innovators" }, { value: "Junior Developers", label: "Junior Developers" }] }]}
       />
 
       {state.loading && state.items.length === 0 ? (
@@ -89,51 +49,35 @@ export default function AdminEnrollmentsPage() {
         <ErrorState message={state.error} />
       ) : (
         <>
-          <div className="space-y-4 relative">
+          <div className="space-y-3 relative">
             {state.loading && (
-              <div className="absolute inset-0 bg-black/10 backdrop-blur-[1px] z-10 rounded-xl flex items-center justify-center">
-                 <div className="h-6 w-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent"></div>
+              <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-white/70 backdrop-blur-[2px]">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
               </div>
             )}
             {state.items.map((item) => (
-              <div key={item._id} className="rounded-xl bg-white/10 p-4">
-                <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <div key={item._id} className="rounded-2xl border border-gray-100 bg-gray-50 p-4 hover:shadow-md transition-shadow">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                   <div>
-                    <p className="font-semibold text-white">{item.studentName}</p>
-                    <p className="text-xs text-blue-100">Submitted: {new Date(item.createdAt).toLocaleString()}</p>
+                    <p className="font-semibold text-gray-800">{item.studentName}</p>
+                    <p className="text-xs text-gray-400">Submitted: {new Date(item.createdAt).toLocaleString()}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <StatusBadge status={item.status} />
-                    <select
-                      className="rounded-lg bg-white/20 px-2 py-1 text-xs"
-                      value={item.status}
-                      onChange={(e) =>
-                        enrollmentService
-                          .updateStatus(item._id, e.target.value)
-                          .then(load)
-                      }
-                    >
-                      <option className="text-black">pending</option>
-                      <option className="text-black">reviewed</option>
-                      <option className="text-black">approved</option>
-                      <option className="text-black">rejected</option>
+                    <select className={selectCls} value={item.status} onChange={(e) => enrollmentService.updateStatus(item._id, e.target.value).then(load)}>
+                      {["pending", "reviewed", "approved", "rejected"].map((s) => <option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
                 </div>
-
-                <div className="grid gap-3 text-sm text-blue-50 md:grid-cols-2">
-                  <p><span className="text-blue-200">Program:</span> {item.selectedProgram}</p>
-                  <p><span className="text-blue-200">Duration:</span> {item.duration}</p>
-                  <p><span className="text-blue-200">Grade:</span> {item.grade}</p>
-                  <p><span className="text-blue-200">Email:</span> {item.email}</p>
-                  <p><span className="text-blue-200">Phone:</span> {item.phone}</p>
-                  <p><span className="text-blue-200">Address:</span> {item.address}</p>
+                <div className="grid gap-2 text-sm sm:grid-cols-2">
+                  {[["Program", item.selectedProgram], ["Duration", item.duration], ["Grade", item.grade], ["Email", item.email], ["Phone", item.phone], ["Address", item.address]].map(([label, val]) => (
+                    <p key={label}><span className="text-gray-400">{label}: </span><span className="font-medium text-gray-700">{val}</span></p>
+                  ))}
                 </div>
               </div>
             ))}
-            
             {state.items.length === 0 && !state.loading && (
-              <div className="text-center text-blue-200 py-8">No enrollments found.</div>
+              <p className="py-8 text-center text-sm text-gray-400">No enrollments found.</p>
             )}
           </div>
           <Pagination pagination={state.pagination} filters={filters} setFilters={setFilters} />

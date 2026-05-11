@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import DashboardLayout from "../../components/dashboard/DashboardLayout";
 import { applicationService } from "../../services/applicationService";
 import { LoadingState, ErrorState } from "../../components/common/States";
@@ -46,6 +47,18 @@ export default function UserApplicationsPage() {
         <LoadingState />
       ) : state.error ? (
         <ErrorState message={state.error} />
+      ) : state.items.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-white/10 bg-white/5 py-16 text-center">
+          <div className="mb-4 text-5xl">📄</div>
+          <h3 className="mb-2 text-xl font-semibold text-white">No applications yet</h3>
+          <p className="mb-6 text-blue-200 text-sm">Submit a technical course application to see it tracked here.</p>
+          <Link
+            to="/apply"
+            className="rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:scale-105"
+          >
+            Apply Now
+          </Link>
+        </div>
       ) : (
         <div className="space-y-4">
           {state.items.map((item) => (
@@ -73,3 +86,4 @@ export default function UserApplicationsPage() {
     </DashboardLayout>
   );
 }
+

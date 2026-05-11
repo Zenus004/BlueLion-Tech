@@ -6,6 +6,9 @@ import { authService } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 
+const inputCls =
+  "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 shadow-sm placeholder-gray-400 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition";
+
 export default function SignupPage() {
   const navigate = useNavigate();
   const { setSession } = useAuth();
@@ -21,7 +24,7 @@ export default function SignupPage() {
       const res = await authService.userSignup(form);
       setSession({ token: res.data.data.token, role: "user", profile: res.data.data.user });
       toast.success("Account created successfully");
-      navigate("/dashboard");
+      navigate("/");
     } catch (error) {
       toast.error(error?.response?.data?.message || "Signup failed");
     } finally {
@@ -30,29 +33,79 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 px-4 py-24 text-white">
-      <div className="mx-auto max-w-md">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur-md">
-          <h1 className="mb-2 text-3xl font-bold">Create Account</h1>
-          <p className="mb-6 text-blue-100">Use the same email from your forms to track progress</p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 px-4 py-16 flex flex-col">
+      {/* Logo */}
+      <div className="mb-10 text-center">
+        <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          BlueLionTech
+        </Link>
+      </div>
 
+      <div className="mx-auto w-full max-w-md flex-1">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="rounded-2xl border border-gray-100 bg-white p-8 shadow-xl"
+        >
+          {/* Header */}
+          <h1 className="mb-1 text-2xl font-bold text-gray-800">Create your account</h1>
+          <p className="mb-6 text-sm text-gray-500">
+            Use the same email from your application or enrollment to track progress.
+          </p>
+
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            <input className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3" placeholder="Full Name" value={form.fullName} onChange={(e) => setForm((p) => ({ ...p, fullName: e.target.value }))} required />
-            <input className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3" type="email" placeholder="Email" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} required />
+            <input
+              className={inputCls}
+              placeholder="Full Name"
+              value={form.fullName}
+              onChange={(e) => setForm((p) => ({ ...p, fullName: e.target.value }))}
+              required
+            />
+            <input
+              className={inputCls}
+              type="email"
+              placeholder="Email address"
+              value={form.email}
+              onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
+              required
+            />
             <div className="relative">
-              <input className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 pr-12" type={showPassword ? "text" : "password"} placeholder="Password" value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} required />
+              <input
+                className={`${inputCls} pr-12`}
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={form.password}
+                onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))}
+                required
+              />
               <button
                 type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-blue-100"
+                onClick={() => setShowPassword((p) => !p)}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-indigo-500 transition"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            <button disabled={loading} className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 py-3 font-semibold transition hover:scale-[1.01] disabled:opacity-50">{loading ? "Please wait..." : "Sign Up"}</button>
+
+            <button
+              disabled={loading}
+              className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 py-3 text-sm font-semibold text-white shadow-md transition hover:scale-[1.01] hover:shadow-lg disabled:opacity-50"
+            >
+              {loading ? "Creating account..." : "Create Account"}
+            </button>
           </form>
 
-          <p className="mt-5 text-center text-sm text-blue-100">Already have an account? <Link className="font-semibold text-cyan-300" to="/login">Login</Link></p>
+          <p className="mt-5 text-center text-sm text-gray-500">
+            Already have an account?{" "}
+            <Link className="font-semibold text-indigo-600 hover:text-indigo-700" to="/login">
+              Login
+            </Link>
+          </p>
+          <p className="mt-3 text-center text-sm text-gray-500">
+            <Link className="hover:text-indigo-600 transition" to="/">← Back to home</Link>
+          </p>
         </motion.div>
       </div>
     </div>

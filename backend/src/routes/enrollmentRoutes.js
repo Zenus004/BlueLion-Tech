@@ -6,7 +6,7 @@ const {
   updateEnrollmentStatus,
   deleteEnrollment,
 } = require("../controllers/enrollmentController");
-const { verifyAdmin } = require("../middleware/authMiddleware");
+const { verifyAdmin, optionalVerifyUser } = require("../middleware/authMiddleware");
 const validateRequest = require("../middleware/validateRequest");
 const {
   createEnrollmentValidation,
@@ -19,7 +19,7 @@ const { submissionLimiter } = require("../middleware/rateLimiter");
 
 const router = express.Router();
 
-router.post("/enrollments", submissionLimiter, createEnrollmentValidation, validateRequest, createEnrollment);
+router.post("/enrollments", optionalVerifyUser, submissionLimiter, createEnrollmentValidation, validateRequest, createEnrollment);
 
 router.get(
   "/admin/enrollments",

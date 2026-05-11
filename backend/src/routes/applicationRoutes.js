@@ -6,7 +6,7 @@ const {
   updateApplicationStatus,
   deleteApplication,
 } = require("../controllers/applicationController");
-const { verifyAdmin } = require("../middleware/authMiddleware");
+const { verifyAdmin, optionalVerifyUser } = require("../middleware/authMiddleware");
 const validateRequest = require("../middleware/validateRequest");
 const {
   createApplicationValidation,
@@ -21,6 +21,7 @@ const router = express.Router();
 
 router.post(
   "/applications",
+  optionalVerifyUser,
   submissionLimiter,
   createApplicationValidation,
   validateRequest,

@@ -64,6 +64,21 @@ const verifyAdmin = async (req, res, next) => {
   }
 };
 
+const optionalVerifyUser = async (req, res, next) => {
+  try {
+    const token = extractBearerToken(req) || req.cookies.userToken;
+    if (!token) return next();
+
+    const payload = verifyUserToken(token);
+    const user = await User.findById(payload.id).select("-password");
+    if (user && !user.isBlocked) {
+      req.user = user;
+    }
+  } catch {
+  }
+  next();
+};
+
 const verifySuperAdmin = (req, res, next) => {
   if (!req.admin) {
     return next(
@@ -84,4 +99,5 @@ module.exports = {
   verifyUser,
   verifyAdmin,
   verifySuperAdmin,
+  optionalVerifyUser,
 };

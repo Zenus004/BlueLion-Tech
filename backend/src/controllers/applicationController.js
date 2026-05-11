@@ -7,7 +7,7 @@ const createApplication = asyncHandler(async (req, res) => {
   const { fullName, email, phone, course, qualification, city } = req.body;
 
   const application = await Application.create({
-    userId: null,
+    userId: req.user?._id || null,
     fullName: fullName.trim(),
     email: email.toLowerCase().trim(),
     phone: phone.trim(),
@@ -56,7 +56,7 @@ const getAllApplications = asyncHandler(async (req, res) => {
   if (createdFrom || createdTo) {
     filter.createdAt = {};
     if (createdFrom) filter.createdAt.$gte = new Date(`${createdFrom}T00:00:00.000Z`);
-    if (createdTo)   filter.createdAt.$lte = new Date(`${createdTo}T23:59:59.999Z`);
+    if (createdTo) filter.createdAt.$lte = new Date(`${createdTo}T23:59:59.999Z`);
   }
 
   const sort = { [sortBy]: sortOrder === "asc" ? 1 : -1 };

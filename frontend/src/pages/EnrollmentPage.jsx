@@ -6,7 +6,7 @@ import { useToast } from "../context/ToastContext";
 
 const gradeMap = {
   "Junior Innovators": "Grade 3-5",
-  "Tech Explorers": "Grade 6-8",
+  "Tech Explorer": "Grade 6-8",
   "Pre-Professional": "Grade 9-10",
   "Industry & Startup": "Grade 11-12",
 };
@@ -54,7 +54,7 @@ export default function EnrollmentPage() {
           <form onSubmit={onSubmit} className="grid gap-4 md:grid-cols-2">
             <input className="rounded-xl border border-white/20 bg-white/10 p-3" placeholder="Student Name" value={form.studentName} onChange={(e) => setForm((p) => ({ ...p, studentName: e.target.value }))} required />
             <input type="email" className="rounded-xl border border-white/20 bg-white/10 p-3" placeholder="Email" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} required />
-            <input className="rounded-xl border border-white/20 bg-white/10 p-3" placeholder="Phone" value={form.phone} onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))} required />
+            <input className="rounded-xl border border-white/20 bg-white/10 p-3" placeholder="Guardian Phone Number" value={form.phone} onChange={(e) => setForm((p) => ({ ...p, phone: e.target.value }))} required />
             <select className="rounded-xl border border-white/20 bg-white/10 p-3" value={form.selectedProgram} onChange={(e) => onProgramChange(e.target.value)}>
               {Object.keys(gradeMap).map((program) => <option key={program} value={program} className="text-black">{program}</option>)}
             </select>

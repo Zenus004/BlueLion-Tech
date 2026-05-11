@@ -15,80 +15,34 @@ const links = [
   { to: "/admin/dashboard/admins", label: "Admins" },
 ];
 
-const courseDurationMap = {
-  "B.Tech": "4 Years",
-  BCA: "3 Years",
-  "BSc IT": "3 Years",
-  BBA: "3 Years",
-};
+const courseDurationMap = { "B.Tech": "4 Years", BCA: "3 Years", "BSc IT": "3 Years", BBA: "3 Years" };
+
+const selectCls = "rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs text-gray-700 shadow-sm focus:border-indigo-400 focus:outline-none transition";
 
 export default function AdminApplicationsPage() {
   const [state, setState] = useState({ loading: true, error: "", items: [], pagination: null });
-  const [filters, setFilters] = useState({
-    page: 1,
-    limit: 10,
-    search: "",
-    status: "",
-    course: "",
-    sortOrder: "desc",
-    createdFrom: "",
-    createdTo: "",
-  });
+  const [filters, setFilters] = useState({ page: 1, limit: 10, search: "", status: "", course: "", sortOrder: "desc", createdFrom: "", createdTo: "" });
 
   const load = useCallback(() => {
     setState((p) => ({ ...p, loading: true }));
-    const activeFilters = Object.fromEntries(
-      Object.entries(filters).filter(([_, v]) => v !== "")
-    );
     applicationService
-      .list(activeFilters)
-      .then((res) =>
-        setState({
-          loading: false,
-          error: "",
-          items: res.data.data.applications,
-          pagination: res.data.data.pagination,
-        })
-      )
-      .catch((e) =>
-        setState({
-          loading: false,
-          error: e?.response?.data?.message || "Failed to load",
-          items: [],
-          pagination: null,
-        })
-      );
+      .list(Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== "")))
+      .then((res) => setState({ loading: false, error: "", items: res.data.data.applications, pagination: res.data.data.pagination }))
+      .catch((e) => setState({ loading: false, error: e?.response?.data?.message || "Failed to load", items: [], pagination: null }));
   }, [filters]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      load();
-    }, 300); // debounce
-    return () => clearTimeout(timer);
+    const t = setTimeout(load, 300);
+    return () => clearTimeout(t);
   }, [load]);
-
-  const customFilters = [
-    {
-      name: "course",
-      placeholder: "All Courses",
-      options: [
-        { value: "B.Tech", label: "B.Tech" },
-        { value: "BCA", label: "BCA" },
-        { value: "BSc IT", label: "BSc IT" },
-        { value: "BBA", label: "BBA" },
-      ],
-    },
-  ];
-
-  const statusOptions = ["pending", "reviewed", "approved", "rejected", "contacted"];
 
   return (
     <DashboardLayout title="Manage Applications" links={links}>
-      <FilterBar 
-        filters={filters} 
-        setFilters={setFilters} 
-        customFilters={customFilters} 
-        statusOptions={statusOptions} 
+      <FilterBar
+        filters={filters}
+        setFilters={setFilters}
+        statusOptions={["pending", "reviewed", "approved", "rejected", "contacted"]}
+        customFilters={[{ name: "course", placeholder: "All Courses", options: [{ value: "B.Tech", label: "B.Tech" }, { value: "BCA", label: "BCA" }, { value: "BSc IT", label: "BSc IT" }, { value: "BBA", label: "BBA" }] }]}
       />
 
       {state.loading && state.items.length === 0 ? (
@@ -97,52 +51,35 @@ export default function AdminApplicationsPage() {
         <ErrorState message={state.error} />
       ) : (
         <>
-          <div className="space-y-4 relative">
+          <div className="space-y-3 relative">
             {state.loading && (
-              <div className="absolute inset-0 bg-black/10 backdrop-blur-[1px] z-10 rounded-xl flex items-center justify-center">
-                 <div className="h-6 w-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent"></div>
+              <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-white/70 backdrop-blur-[2px]">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
               </div>
             )}
             {state.items.map((item) => (
-              <div key={item._id} className="rounded-xl bg-white/10 p-4">
-                <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <div key={item._id} className="rounded-2xl border border-gray-100 bg-gray-50 p-4 hover:shadow-md transition-shadow">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                   <div>
-                    <p className="font-semibold text-white">{item.fullName}</p>
-                    <p className="text-xs text-blue-100">Submitted: {new Date(item.createdAt).toLocaleString()}</p>
+                    <p className="font-semibold text-gray-800">{item.fullName}</p>
+                    <p className="text-xs text-gray-400">Submitted: {new Date(item.createdAt).toLocaleString()}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <StatusBadge status={item.status} />
-                    <select
-                      className="rounded-lg bg-white/20 px-2 py-1 text-xs"
-                      value={item.status}
-                      onChange={(e) =>
-                        applicationService
-                          .updateStatus(item._id, e.target.value)
-                          .then(load)
-                      }
-                    >
-                      <option className="text-black">pending</option>
-                      <option className="text-black">reviewed</option>
-                      <option className="text-black">approved</option>
-                      <option className="text-black">rejected</option>
-                      <option className="text-black">contacted</option>
+                    <select className={selectCls} value={item.status} onChange={(e) => applicationService.updateStatus(item._id, e.target.value).then(load)}>
+                      {["pending", "reviewed", "approved", "rejected", "contacted"].map((s) => <option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
                 </div>
-
-                <div className="grid gap-3 text-sm text-blue-50 md:grid-cols-2">
-                  <p><span className="text-blue-200">Course:</span> {item.course}</p>
-                  <p><span className="text-blue-200">Duration:</span> {courseDurationMap[item.course] || "N/A"}</p>
-                  <p><span className="text-blue-200">Email:</span> {item.email}</p>
-                  <p><span className="text-blue-200">Phone:</span> {item.phone}</p>
-                  <p><span className="text-blue-200">Qualification:</span> {item.qualification}</p>
-                  <p><span className="text-blue-200">City:</span> {item.city}</p>
+                <div className="grid gap-2 text-sm sm:grid-cols-2">
+                  {[["Course", item.course], ["Duration", courseDurationMap[item.course] || "N/A"], ["Email", item.email], ["Phone", item.phone], ["Qualification", item.qualification], ["City", item.city]].map(([label, val]) => (
+                    <p key={label}><span className="text-gray-400">{label}: </span><span className="font-medium text-gray-700">{val}</span></p>
+                  ))}
                 </div>
               </div>
             ))}
-            
             {state.items.length === 0 && !state.loading && (
-              <div className="text-center text-blue-200 py-8">No applications found.</div>
+              <p className="py-8 text-center text-sm text-gray-400">No applications found.</p>
             )}
           </div>
           <Pagination pagination={state.pagination} filters={filters} setFilters={setFilters} />

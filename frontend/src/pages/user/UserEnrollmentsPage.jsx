@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import DashboardLayout from "../../components/dashboard/DashboardLayout";
 import { enrollmentService } from "../../services/enrollmentService";
 import { LoadingState, ErrorState } from "../../components/common/States";
@@ -39,6 +40,18 @@ export default function UserEnrollmentsPage() {
         <LoadingState />
       ) : state.error ? (
         <ErrorState message={state.error} />
+      ) : state.items.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-white/10 bg-white/5 py-16 text-center">
+          <div className="mb-4 text-5xl">🎓</div>
+          <h3 className="mb-2 text-xl font-semibold text-white">No enrollments yet</h3>
+          <p className="mb-6 text-blue-200 text-sm">Enroll in a BlueLion-Tech program and track your status here.</p>
+          <Link
+            to="/enroll"
+            className="rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:scale-105"
+          >
+            Enroll Now
+          </Link>
+        </div>
       ) : (
         <div className="space-y-4">
           {state.items.map((item) => (
@@ -66,3 +79,4 @@ export default function UserEnrollmentsPage() {
     </DashboardLayout>
   );
 }
+

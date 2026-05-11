@@ -16,87 +16,48 @@ const links = [
 
 export default function AdminUsersPage() {
   const [state, setState] = useState({ loading: true, error: "", items: [], pagination: null });
-  const [filters, setFilters] = useState({
-    page: 1,
-    limit: 10,
-    search: "",
-    sortOrder: "desc",
-    createdFrom: "",
-    createdTo: "",
-  });
+  const [filters, setFilters] = useState({ page: 1, limit: 10, search: "", sortOrder: "desc", createdFrom: "", createdTo: "" });
 
   const load = useCallback(() => {
     setState((p) => ({ ...p, loading: true }));
-    const activeFilters = Object.fromEntries(
-      Object.entries(filters).filter(([_, v]) => v !== "")
-    );
     userManagementService
-      .list(activeFilters)
-      .then((res) =>
-        setState({
-          loading: false,
-          error: "",
-          items: res.data.data.users,
-          pagination: res.data.data.pagination,
-        })
-      )
-      .catch((e) =>
-        setState({
-          loading: false,
-          error: e?.response?.data?.message || "Failed to load",
-          items: [],
-          pagination: null,
-        })
-      );
+      .list(Object.fromEntries(Object.entries(filters).filter(([, v]) => v !== "")))
+      .then((res) => setState({ loading: false, error: "", items: res.data.data.users, pagination: res.data.data.pagination }))
+      .catch((e) => setState({ loading: false, error: e?.response?.data?.message || "Failed to load", items: [], pagination: null }));
   }, [filters]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      load();
-    }, 300);
-    return () => clearTimeout(timer);
+    const t = setTimeout(load, 300);
+    return () => clearTimeout(t);
   }, [load]);
 
   return (
     <DashboardLayout title="User Management" links={links}>
-      <FilterBar 
-        filters={filters} 
-        setFilters={setFilters} 
-        customFilters={[]} 
-        statusOptions={[]} 
-      />
-
-      {state.loading && state.items.length === 0 ? (
-        <LoadingState />
-      ) : state.error ? (
-        <ErrorState message={state.error} />
-      ) : (
+      <FilterBar filters={filters} setFilters={setFilters} customFilters={[]} statusOptions={[]} />
+      {state.loading && state.items.length === 0 ? <LoadingState /> : state.error ? <ErrorState message={state.error} /> : (
         <>
           <div className="space-y-3 relative">
             {state.loading && (
-              <div className="absolute inset-0 bg-black/10 backdrop-blur-[1px] z-10 rounded-xl flex items-center justify-center">
-                 <div className="h-6 w-6 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent"></div>
+              <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-white/70 backdrop-blur-[2px]">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
               </div>
             )}
             {state.items.map((item) => (
-              <div key={item._id} className="flex items-center justify-between rounded-xl bg-white/10 p-4">
+              <div key={item._id} className="flex items-center justify-between rounded-2xl border border-gray-100 bg-gray-50 p-4 hover:shadow-md transition-shadow">
                 <div>
-                  <p className="font-semibold text-white">{item.fullName}</p>
-                  <p className="text-xs text-blue-100">{item.email}</p>
-                  <p className="text-[10px] text-blue-200/70 mt-1">Joined: {new Date(item.createdAt).toLocaleDateString()}</p>
+                  <p className="font-semibold text-gray-800">{item.fullName}</p>
+                  <p className="text-xs text-gray-500">{item.email}</p>
+                  <p className="text-[11px] text-gray-400 mt-0.5">Joined: {new Date(item.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</p>
                 </div>
-                <button 
-                  onClick={() => (item.isBlocked ? userManagementService.unblock(item._id) : userManagementService.block(item._id)).then(load)} 
-                  className={`rounded-full px-3 py-1 text-xs font-semibold ${item.isBlocked ? "bg-emerald-500/80" : "bg-red-500/80"}`}
+                <button
+                  onClick={() => (item.isBlocked ? userManagementService.unblock(item._id) : userManagementService.block(item._id)).then(load)}
+                  className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${item.isBlocked ? "bg-green-50 text-green-700 border border-green-200 hover:bg-green-100" : "bg-red-50 text-red-600 border border-red-200 hover:bg-red-100"}`}
                 >
                   {item.isBlocked ? "Unblock" : "Block"}
                 </button>
               </div>
             ))}
-            
-            {state.items.length === 0 && !state.loading && (
-              <div className="text-center text-blue-200 py-8">No users found.</div>
-            )}
+            {state.items.length === 0 && !state.loading && <p className="py-8 text-center text-sm text-gray-400">No users found.</p>}
           </div>
           <Pagination pagination={state.pagination} filters={filters} setFilters={setFilters} />
         </>

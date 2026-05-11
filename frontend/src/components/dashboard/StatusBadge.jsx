@@ -1,16 +1,18 @@
 export default function StatusBadge({ status }) {
-  const styleByStatus = {
-    pending: "bg-yellow-500/20 text-yellow-200 border-yellow-300/30",
-    reviewed: "bg-blue-500/20 text-blue-200 border-blue-300/30",
-    approved: "bg-emerald-500/20 text-emerald-200 border-emerald-300/30",
-    rejected: "bg-red-500/20 text-red-200 border-red-300/30",
-    contacted: "bg-purple-500/20 text-purple-200 border-purple-300/30",
-    received: "bg-cyan-500/20 text-cyan-200 border-cyan-300/30",
+  const styles = {
+    pending:   { dot: "bg-yellow-400", text: "text-yellow-700", bg: "bg-yellow-50"  },
+    reviewed:  { dot: "bg-blue-400",   text: "text-blue-700",   bg: "bg-blue-50"    },
+    approved:  { dot: "bg-green-500",  text: "text-green-700",  bg: "bg-green-50"   },
+    rejected:  { dot: "bg-red-400",    text: "text-red-700",    bg: "bg-red-50"     },
+    contacted: { dot: "bg-purple-400", text: "text-purple-700", bg: "bg-purple-50"  },
+    received:  { dot: "bg-cyan-500",   text: "text-cyan-700",   bg: "bg-cyan-50"    },
   };
+  const s = styles[status] || { dot: "bg-gray-400", text: "text-gray-600", bg: "bg-gray-50" };
 
   return (
-    <span className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase ${styleByStatus[status] || "bg-white/20 text-white border-white/30"}`}>
-      {status}
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${s.bg} ${s.text}`}>
+      <span className={`h-1.5 w-1.5 rounded-full ${s.dot}`} />
+      {status ? status.charAt(0).toUpperCase() + status.slice(1) : "—"}
     </span>
   );
 }

@@ -44,6 +44,25 @@ const getApplicationStatusBuckets = async () => {
   );
 };
 
+const getEnrollmentStatusBuckets = async () => {
+  const [bucket] = await Enrollment.aggregate([
+    {
+      $group: {
+        _id: null,
+        pendingEnrollments: {
+          $sum: { $cond: [{ $eq: ["$status", "pending"] }, 1, 0] },
+        },
+        approvedEnrollments: {
+          $sum: { $cond: [{ $eq: ["$status", "approved"] }, 1, 0] },
+        },
+      },
+    },
+    { $project: { _id: 0, pendingEnrollments: 1, approvedEnrollments: 1 } },
+  ]);
+
+  return bucket || { pendingEnrollments: 0, approvedEnrollments: 0 };
+};
+
 const getRecentSubmissions = async (limit = 10) => {
   const [applications, enrollments, contacts] = await Promise.all([
     Application.find({})
@@ -109,6 +128,7 @@ const getAdminDashboardStats = async () => {
     totalEnrollments,
     totalContacts,
     statusBuckets,
+    enrollmentBuckets,
     recentSubmissions,
     recentUsers,
   ] = await Promise.all([
@@ -117,6 +137,7 @@ const getAdminDashboardStats = async () => {
     Enrollment.countDocuments({}),
     Contact.countDocuments({}),
     getApplicationStatusBuckets(),
+    getEnrollmentStatusBuckets(),
     getRecentSubmissions(10),
     getRecentUsers(10),
   ]);
@@ -129,6 +150,8 @@ const getAdminDashboardStats = async () => {
     pendingApplications: statusBuckets.pendingApplications,
     approvedApplications: statusBuckets.approvedApplications,
     rejectedApplications: statusBuckets.rejectedApplications,
+    pendingEnrollments: enrollmentBuckets.pendingEnrollments,
+    approvedEnrollments: enrollmentBuckets.approvedEnrollments,
     recentSubmissions,
     recentUsers,
   };

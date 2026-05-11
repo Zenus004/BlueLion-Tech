@@ -8,7 +8,7 @@ const createEnrollment = asyncHandler(async (req, res) => {
     req.body;
 
   const enrollment = await Enrollment.create({
-    userId: null,
+    userId: req.user?._id || null, // linked if user is logged in, anonymous otherwise
     studentName: studentName.trim(),
     email: email.toLowerCase().trim(),
     phone: phone.trim(),

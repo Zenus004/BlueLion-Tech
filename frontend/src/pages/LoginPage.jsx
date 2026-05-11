@@ -6,6 +6,9 @@ import { authService } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 
+const inputCls =
+  "w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 shadow-sm placeholder-gray-400 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition";
+
 export default function LoginPage() {
   const navigate = useNavigate();
   const { setSession } = useAuth();
@@ -28,7 +31,7 @@ export default function LoginPage() {
         const res = await authService.userLogin({ email: form.email, password: form.password });
         setSession({ token: res.data.data.token, role: "user", profile: res.data.data.user });
         toast.success("Login successful");
-        navigate("/dashboard");
+        navigate("/");
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || "Login failed");
@@ -38,37 +41,108 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 px-4 py-24 text-white">
-      <div className="mx-auto max-w-md">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl border border-white/20 bg-white/10 p-8 shadow-2xl backdrop-blur-md">
-          <h1 className="mb-2 text-3xl font-bold">{isAdmin ? "Admin Login" : "User Login"}</h1>
-          <p className="mb-6 text-blue-100">Access your BlueLion-Tech account</p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 px-4 py-16 flex flex-col">
+      {/* Navbar link */}
+      <div className="mb-10 text-center">
+        <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          BlueLionTech
+        </Link>
+      </div>
 
-          <div className="mb-6 flex gap-2 rounded-xl bg-white/10 p-1">
-            <button className={`w-full rounded-lg py-2 text-sm font-semibold ${!isAdmin ? "bg-cyan-500 text-white" : "text-blue-100"}`} onClick={() => setIsAdmin(false)}>User</button>
-            <button className={`w-full rounded-lg py-2 text-sm font-semibold ${isAdmin ? "bg-cyan-500 text-white" : "text-blue-100"}`} onClick={() => setIsAdmin(true)}>Admin</button>
+      <div className="mx-auto w-full max-w-md flex-1">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="rounded-2xl border border-gray-100 bg-white p-8 shadow-xl"
+        >
+          {/* Header */}
+          <h1 className="mb-1 text-2xl font-bold text-gray-800">
+            {isAdmin ? "Admin Login" : "Welcome back!"}
+          </h1>
+          <p className="mb-6 text-sm text-gray-500">
+            {isAdmin ? "Access the BlueLion-Tech admin panel" : "Login to your BlueLion-Tech account"}
+          </p>
+
+          {/* Role toggle */}
+          <div className="mb-6 flex gap-1.5 rounded-xl border border-gray-100 bg-gray-50 p-1">
+            <button
+              onClick={() => setIsAdmin(false)}
+              className={`flex-1 rounded-lg py-2 text-sm font-semibold transition ${
+                !isAdmin ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md" : "text-gray-500 hover:text-indigo-600"
+              }`}
+            >
+              User
+            </button>
+            <button
+              onClick={() => setIsAdmin(true)}
+              className={`flex-1 rounded-lg py-2 text-sm font-semibold transition ${
+                isAdmin ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md" : "text-gray-500 hover:text-indigo-600"
+              }`}
+            >
+              Admin
+            </button>
           </div>
 
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {isAdmin ? (
-              <input className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3" placeholder="Username" value={form.username} onChange={(e) => setForm((p) => ({ ...p, username: e.target.value }))} required />
+              <input
+                className={inputCls}
+                placeholder="Username"
+                value={form.username}
+                onChange={(e) => setForm((p) => ({ ...p, username: e.target.value }))}
+                required
+              />
             ) : (
-              <input className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3" type="email" placeholder="Email" value={form.email} onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} required />
+              <input
+                className={inputCls}
+                type="email"
+                placeholder="Email address"
+                value={form.email}
+                onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
+                required
+              />
             )}
+
             <div className="relative">
-              <input className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 pr-12" type={showPassword ? "text" : "password"} placeholder="Password" value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} required />
+              <input
+                className={`${inputCls} pr-12`}
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={form.password}
+                onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))}
+                required
+              />
               <button
                 type="button"
-                onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-blue-100"
+                onClick={() => setShowPassword((p) => !p)}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-indigo-500 transition"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            <button disabled={loading} className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 py-3 font-semibold transition hover:scale-[1.01] disabled:opacity-50">{loading ? "Please wait..." : "Login"}</button>
+
+            <button
+              disabled={loading}
+              className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 py-3 text-sm font-semibold text-white shadow-md transition hover:scale-[1.01] hover:shadow-lg disabled:opacity-50"
+            >
+              {loading ? "Please wait..." : "Login"}
+            </button>
           </form>
 
-          {!isAdmin && <p className="mt-5 text-center text-sm text-blue-100">New user? <Link className="font-semibold text-cyan-300" to="/signup">Create account</Link></p>}
+          {!isAdmin && (
+            <p className="mt-5 text-center text-sm text-gray-500">
+              New user?{" "}
+              <Link className="font-semibold text-indigo-600 hover:text-indigo-700" to="/signup">
+                Create account
+              </Link>
+            </p>
+          )}
+
+          <p className="mt-3 text-center text-sm text-gray-500">
+            <Link className="hover:text-indigo-600 transition" to="/">← Back to home</Link>
+          </p>
         </motion.div>
       </div>
     </div>
